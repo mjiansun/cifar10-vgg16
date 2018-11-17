@@ -6,15 +6,18 @@ from keras.engine import Model
 from keras.layers import Dropout, Flatten, Dense
 from keras.preprocessing.image import ImageDataGenerator
 from keras.utils import np_utils
-
+from keras.utils.vis_utils import plot_model #for graphical demonstration of Network model
+import os
 import vgg
 
+#add graphwiz path to show model graph.
+os.environ["PATH"] += os.pathsep + 'C:/Program Files (x86)/Graphviz2.38/bin/'
 #tf.python.control_flow_ops = tf
 
 img_width, img_height = 32, 32
 base_model = vgg.VGG16(weights='imagenet', include_top=False, input_shape=(32, 32, 3))
 
-nb_epoch = 50
+epochs = 50
 nb_classes = 10
 
 (X_train, y_train), (X_test, y_test) = cifar10.load_data()
@@ -47,6 +50,9 @@ model.compile(loss='binary_crossentropy',
               metrics=['accuracy'])
 
 model.summary()
+
+# please install pydot with pip install pydot and download graphwiz from website :https://graphviz.gitlab.io/_pages/Download/Download_windows.html
+plot_model(model, to_file='model_plot.png', show_shapes=True, show_layer_names=True)
 # prepare data augmentation configuration
 train_datagen = ImageDataGenerator(
     rescale=1. / 255,
@@ -66,10 +72,10 @@ tb = callbacks.TensorBoard(log_dir='./logs', histogram_freq=0, write_graph=True,
 # fine-tune the model
 model.fit_generator(
     train_generator,
-    samples_per_epoch=nb_train_samples,
-    nb_epoch=nb_epoch,
+    steps_per_epoch=nb_train_samples,
+    epochs=epochs,
     validation_data=validation_generator,
-    nb_val_samples=nb_validation_samples,
+    validation_steps =nb_validation_samples,
     callbacks=[tb])
 
 # save the model
