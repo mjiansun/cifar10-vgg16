@@ -9,7 +9,7 @@ from keras.utils import np_utils
 
 import vgg
 
-tf.python.control_flow_ops = tf
+#tf.python.control_flow_ops = tf
 
 img_width, img_height = 32, 32
 base_model = vgg.VGG16(weights='imagenet', include_top=False, input_shape=(32, 32, 3))
