@@ -1,4 +1,4 @@
-# vgg16 cifar10-Dataset Training, Predicting an Image Using Trained Model
+# vgg16 cifar10-Dataset Training, Prediction Using Trained Model
 
 
 ## Description
@@ -12,6 +12,9 @@ Trained using two approaches
 1. Keeping the base model's layer fixed,
 2. By training end-to-end
 
+The model is modified to decrease the RAM and CPU requirements. Therefore, after block3_conv1 layer, the model is cut.
+[See The Modified Vgg16 Model Visualization](outputs/model_plot.png)
+
 Use this command to train the model, open the console (cmd in windows or terminal in linux)
 ```console
 #cd "Your project folder which contains vgg_transfer.py"
@@ -20,8 +23,9 @@ python vgg_transfer.py
 
 
 
+
 ## Prediction
-Any cifar-10 dataset image or custom 32x32x3 RGB image can be predicted using "vgg_predict.py". 
+Any cifar-10 dataset image or custom 32x32x3 RGB image can be predicted using "vgg_predict.py" but you should modify the source and load the image as an input. 
 Trained [Model](trained_model/cifar10-vgg16_model.h5 "Trained Model") is used to predict the input(s).
 ```console
 #cd "Your project folder which contains vgg_predict.py"
@@ -37,7 +41,7 @@ To visualize some of the filters in the 'block3_conv1' layer, use this command:
 #cd "Your project folder which contains shownetworkFilters.py"
 python shownetworkFilters.py
 ```
-[See the filter visualization](outputs/stitched_filters_block3_conv1_8x8)
+[See the filter visualization](outputs/stitched_filters_block3_conv1_8x8.png)
 
 
 ## Displaying Graphics
@@ -51,7 +55,7 @@ Monitor the Graphs using your webbrowser. http://localhost:6006
 
 #### Files
 Source Files:
-* vgg_transfer.py - The main file with training
+* vgg_transfer.py - The main file for training the modified VGG16 model with cifar10-Dataset.
 * vgg.py - Modified version of Keras VGG implementation to change the minimum input shape limit for cifar-10 (32x32x3)
 * shownetworkFilters.py - Visualizes some of the filters in the 'block3_conv1' layer
 * vgg_predict.py - Takes 2 images from the cifar10-Dataset and predicts the classes. 
