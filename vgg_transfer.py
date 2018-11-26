@@ -9,6 +9,7 @@ from keras.engine import Model
 from keras.models import load_model
 from tensorflow.python.client import device_lib
 from keras.utils.vis_utils import plot_model #for graphical demonstration of Network model #requires graphwiz. Not active for now...
+from keras.callbacks import ModelCheckpoint
 import os
 import vgg
 
@@ -121,6 +122,10 @@ validation_generator = test_datagen.flow(X_test, Y_test, batch_size=batch_testsi
 # callback for tensorboard integration
 tb = callbacks.TensorBoard(log_dir='./logs', histogram_freq=0, write_graph=True, write_images=True)
 
+#Callback for checkpoint. if the mode is improved, at the end of the epoch, model is saved.
+filepath="./trained_models/weights-improvement-{epoch:02d}-{val_acc:.2f}.h5"
+checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
+
 print(  " --nb_train_samples: " + str(nb_train_samples) + "\n" +
 		" --nb_validation_samples: " + str(nb_validation_samples) + "\n" +
 		" --nb_epoch: " + str(nb_epoch) +  "\n" +
@@ -141,7 +146,7 @@ model.fit_generator(
     epochs=nb_epoch,
     validation_data=validation_generator,
     validation_steps =nb_validation_samples,
-    callbacks=[tb])
+    callbacks=[tb,checkpoint])
 
 
 # serialize model to JSON

@@ -1,5 +1,8 @@
-# vgg16 cifar10-Dataset Training, Prediction Using Trained Model
+# vgg16 Training&Prediction Using Cifar10-Dataset
 
+## Software Requirements
+- Python3.6.7 - Keras2.2.0 - tensorflow 1.5.0 - Cuda 9.0 - Cudnn 7.0.5 
+- [For Detailed Software Requirements and Installation Check This Guide](https://github.com/kusiwu/cifar10-vgg16/wiki/How-to-install-Python3.6-and-use-Tensorflow-VGG16-example.)
 
 ## Description
 CNN to classify the cifar-10 database by using a vgg16 trained on Imagenet as base.
