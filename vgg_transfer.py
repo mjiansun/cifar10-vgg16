@@ -19,19 +19,26 @@ import vgg
 #sess_cpu = tf.Session(config=tf.ConfigProto(device_count={'GPU': 0})) #disables gpu
 #os.environ["CUDA_VISIBLE_DEVICES"]="-1"    #disables gpu
 
-#IF you have old computer and want a working test without waiting too much, Set this option to 1
+#IF you have old computer and want a working test without waiting too much, Set this option to 1, but will not train well.
 WANNAFASTTRAINING=1
+
+#switch this parameter to 1 if you want to continue with previous trained model.
+#	-> This will load the previous trained "cifar10-vgg16_model_alllayersv2.h5"
+USEPREVIOUSTRAININGWEIGHTS=1
+
+
 
 img_width, img_height = 32, 32
 #img_width, img_height = 224, 224
 dimensionx=3
 
-nb_epoch = 2 #needs maybe hours if you increase it. If increases also training will be good.
+#Even if the validation accuracy output is %99, it is not truely %99. You have to train the model with large number of epoches to predict truely.
+nb_epoch = 2 #needs maybe hours if you increase it. If numper of epoch increases also training will be increasingly BETTER!!!.
 nb_classes =10 #Number of classes that exists in cifar dataset.
 
 #SGD: Gradient Descent with Momentum and Adaptive Learning Rate
 #for more, see here: https://wiseodd.github.io/techblog/2016/06/22/nn-optimization/
-learningrate=1e-5 #be careful about this parameter. 1e-3 to 1e-8 will train better while learningrate decreases.
+learningrate=1e-5 #be careful about this parameter.
 momentum=0.90
 
 
@@ -42,11 +49,6 @@ batch_trainsize=32
 batch_testsize=32
 
 
-#switch this parameter to 1 if you want to continue with previous trained model.
-#	-> This will load the previous trained "cifar10-vgg16_model_alllayersv2.h5"
-USEPREVIOUSTRAININGWEIGHTS=1
-
-
 
 #Load Training and Test data
 (X_train, y_train), (X_test, y_test) = cifar10.load_data()
@@ -54,8 +56,8 @@ USEPREVIOUSTRAININGWEIGHTS=1
 if WANNAFASTTRAINING == 1 :
     X_train= X_train[0:1000,:,:,:]
     y_train= y_train[0:1000]
-    X_test= X_train[0:200,:,:,:]
-    y_test= y_train[0:200]
+    X_test= X_test[0:200,:,:,:]
+    y_test= y_test[0:200]
 
 Y_train = np_utils.to_categorical(y_train, nb_classes)
 Y_test = np_utils.to_categorical(y_test, nb_classes)
@@ -77,7 +79,10 @@ if USEPREVIOUSTRAININGWEIGHTS == 0:
 
 	model = Model(base_model.input, pred)
 else :
-	model = load_model('./trained_models\cifar10-vgg16_model_alllayers.h5')
+    previouslytrainedModelpath ='./trained_models/cifar10-vgg16_model_alllayers.h5'
+    print('Loading previously trained model from path:' + previouslytrainedModelpath)
+    model = load_model(previouslytrainedModelpath)
+    print(previouslytrainedModelpath + ' successfully loaded!')
 
 
 # set the base model's layers to non-trainable
