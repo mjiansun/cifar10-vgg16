@@ -18,7 +18,11 @@ from keras.engine.topology import get_source_inputs
 from keras.utils.layer_utils import convert_all_kernels_in_model
 from keras.utils.data_utils import get_file
 from keras import backend as K
-from keras.applications.imagenet_utils import decode_predictions, preprocess_input, _obtain_input_shape
+from keras_applications.imagenet_utils import decode_predictions, preprocess_input, _obtain_input_shape
+#from keras_applications.imagenet_utils import _obtain_input_shape 
+
+import tensorflow as tf
+#tf.python.control_flow_ops = tf
 
 
 TH_WEIGHTS_PATH = 'https://github.com/fchollet/deep-learning-models/releases/download/v0.1/vgg16_weights_th_dim_ordering_th_kernels.h5'
@@ -75,8 +79,8 @@ def VGG16(include_top=True, weights='imagenet',
     input_shape = _obtain_input_shape(input_shape,
                                       default_size=224,
                                       min_size=32,  # Changed from original source to allow cifar10 data
-                                      dim_ordering=K.image_dim_ordering(),
-                                      include_top=include_top)
+                                      data_format=K.image_data_format(),
+                                      require_flatten=include_top)
 
     if input_tensor is None:
         img_input = Input(shape=input_shape)
@@ -86,32 +90,33 @@ def VGG16(include_top=True, weights='imagenet',
         else:
             img_input = input_tensor
     # Block 1
-    x = Convolution2D(64, 3, 3, activation='relu', border_mode='same', name='block1_conv1')(img_input)
-    x = Convolution2D(64, 3, 3, activation='relu', border_mode='same', name='block1_conv2')(x)
+    x = Convolution2D(64, (3, 3), activation='relu', padding='same', name='block1_conv1')(img_input)
+    x = Convolution2D(64, (3, 3), activation='relu', padding='same', name='block1_conv2')(x)
     x = MaxPooling2D((2, 2), strides=(2, 2), name='block1_pool')(x)
 
     # Block 2
-    x = Convolution2D(128, 3, 3, activation='relu', border_mode='same', name='block2_conv1')(x)
-    x = Convolution2D(128, 3, 3, activation='relu', border_mode='same', name='block2_conv2')(x)
+    x = Convolution2D(128, (3, 3), activation='relu', padding='same', name='block2_conv1')(x)
+    x = Convolution2D(128, (3, 3), activation='relu', padding='same', name='block2_conv2')(x)
     x = MaxPooling2D((2, 2), strides=(2, 2), name='block2_pool')(x)
 
     # Block 3
-    x = Convolution2D(256, 3, 3, activation='relu', border_mode='same', name='block3_conv1')(x)
-    x = Convolution2D(256, 3, 3, activation='relu', border_mode='same', name='block3_conv2')(x)
-    x = Convolution2D(256, 3, 3, activation='relu', border_mode='same', name='block3_conv3')(x)
+    x = Convolution2D(256, (3, 3), activation='relu', padding='same', name='block3_conv1')(x)
+    x = Convolution2D(256, (3, 3), activation='relu', padding='same', name='block3_conv2')(x)
+    x = Convolution2D(256, (3, 3), activation='relu', padding='same', name='block3_conv3')(x)
     x = MaxPooling2D((2, 2), strides=(2, 2), name='block3_pool')(x)
 
     # Block 4
-    x = Convolution2D(512, 3, 3, activation='relu', border_mode='same', name='block4_conv1')(x)
-    x = Convolution2D(512, 3, 3, activation='relu', border_mode='same', name='block4_conv2')(x)
-    x = Convolution2D(512, 3, 3, activation='relu', border_mode='same', name='block4_conv3')(x)
+    x = Convolution2D(512, (3, 3), activation='relu', padding='same', name='block4_conv1')(x)
+    x = Convolution2D(512, (3, 3), activation='relu', padding='same', name='block4_conv2')(x)
+    x = Convolution2D(512, (3, 3), activation='relu', padding='same', name='block4_conv3')(x)
     x = MaxPooling2D((2, 2), strides=(2, 2), name='block4_pool')(x)
 
     # Block 5
-    x = Convolution2D(512, 3, 3, activation='relu', border_mode='same', name='block5_conv1')(x)
-    x = Convolution2D(512, 3, 3, activation='relu', border_mode='same', name='block5_conv2')(x)
-    x = Convolution2D(512, 3, 3, activation='relu', border_mode='same', name='block5_conv3')(x)
+    x = Convolution2D(512, (3, 3), activation='relu', padding='same', name='block5_conv1')(x)
+    x = Convolution2D(512, (3, 3), activation='relu', padding='same', name='block5_conv2')(x)
+    x = Convolution2D(512, (3, 3), activation='relu', padding='same', name='block5_conv3')(x)
     x = MaxPooling2D((2, 2), strides=(2, 2), name='block5_pool')(x)
+
 
     if include_top:
         # Classification block
